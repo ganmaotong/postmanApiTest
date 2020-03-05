@@ -1,0 +1,363 @@
+{
+	"info": {
+		"_postman_id": "5ec600a6-1b28-4d09-bdfb-aa14547039fe",
+		"name": "接口测试",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Digest Auth测试",
+			"request": {
+				"auth": {
+					"type": "digest",
+					"digest": [
+						{
+							"key": "username",
+							"value": "postman",
+							"type": "string"
+						},
+						{
+							"key": "nonce",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "realm",
+							"value": "user",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "string"
+						},
+						{
+							"key": "algorithm",
+							"value": "MD5",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://postman-echo.com/digest-auth",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"digest-auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "引用本地变量参数",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "39f9fd06-c7ef-4cfe-8b97-306f63d10940",
+						"exec": [
+							"pm.variables.set(\"user\",\"yidd\");\r",
+							"pm.variables.set(\"passwd\",\"aeaqaaa\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7fc7de78-5ee6-481b-85f5-b053e6b0fd0d",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"console.log(jsonData);",
+							"// 获取json的字段数量",
+							"var len = Object.keys(jsonData).length;",
+							"console.log(\"len = \" + len);",
+							"pm.test(\"返参的字段数是否为7\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(len).to.eql(7);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post?userId={{user}}&password={{passwd}}",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "{{user}}"
+						},
+						{
+							"key": "password",
+							"value": "{{passwd}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "引用全局变量",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e3e13630-06d5-4523-b698-df6f43bd75cd",
+						"exec": [
+							"pm.globals.set(\"script_global_key\", \"variable_value11\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b52c96c6-4e3c-4c93-9980-42e12511e756",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"//console.log(jsonData.args);",
+							"userId = jsonData.args['userId'];",
+							"console.log(userId);",
+							"pm.globals.set(\"userId\", userId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://postman-echo.com/post?userId={{script_global_key}}&page_global={{page_global_key}}",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"post"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "{{script_global_key}}"
+						},
+						{
+							"key": "page_global",
+							"value": "{{page_global_key}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "关联接口测试",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "28cc5d72-e1d3-46ce-8ef2-54cefb73a6d1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"userId = pm.globals.get(\"userId\"); ",
+							"console.log(userId);",
+							"pm.test(\"校验返回的userId字段\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    // 获取返回json的",
+							"    var length = Object.keys(jsonData).length;",
+							"    console.log(\"length = \" + length)",
+							"    pm.expect(jsonData.args.userId).to.eql(userId);",
+							"});",
+							"",
+							"// 定义返回json报文的格式：",
+							"var schema = {};",
+							"",
+							"var jsonData = pm.response.json();",
+							"pm.test('Schema is valid', function() {",
+							"  pm.expect(tv4.validate(jsonData, schema)).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://postman-echo.com/get?userId={{userId}}",
+					"protocol": "https",
+					"host": [
+						"postman-echo",
+						"com"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "引用环境变量",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e85e46f8-baa4-40a3-b332-57c0349e05e3",
+						"exec": [
+							"pm.test(\"检查状态码是否为200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{host}}/get?userId={{userId}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"get"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "{{userId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "数据驱动测试",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "cc222990-e141-4cd4-9393-b8377a7b0bba",
+						"exec": [
+							"pm.globals.set(\"username\", data.username);",
+							"pm.globals.set(\"passord\",  data.passwd);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "fe8b2621-10a5-4f56-931c-7e4f48b16c3f",
+						"exec": [
+							"username = pm.globals.get(\"username\");",
+							"passord = pm.globals.get(\"passord\");",
+							"console.log(\"username: \" + username);",
+							"console.log(\"passord: \" + passord);",
+							"pm.test(\"验证data字段中含有username\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data).to.include(username);",
+							"});",
+							"pm.test(\"验证data字段中含有passord\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data).to.include(passord);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n   \"username\":{{username}},\n   \"passwd\": {{passord}}\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}/post?",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"post"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						},
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,38 @@
+{
+	"id": "b505dd4c-c73a-4c18-8383-3baba03d3df8",
+	"values": [
+		{
+			"key": "script_global_key",
+			"value": "variable_value11",
+			"enabled": true
+		},
+		{
+			"key": "userId",
+			"value": "variable_value11",
+			"enabled": true
+		},
+		{
+			"key": "page_global_key",
+			"value": "页面全局变量",
+			"description": {
+				"content": "",
+				"type": "text/plain"
+			},
+			"enabled": true
+		},
+		{
+			"key": "username",
+			"value": "Marry",
+			"enabled": true
+		},
+		{
+			"key": "passord",
+			"value": "8888",
+			"enabled": true
+		}
+	],
+	"name": "My Workspace Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2020-03-04T14:44:12.457Z",
+	"_postman_exported_using": "Postman/6.7.4"
+}
